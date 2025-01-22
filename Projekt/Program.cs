@@ -1,43 +1,38 @@
-﻿using System.Numerics;
-using System.Xml.Serialization;
-using Raylib_cs;
+﻿using Raylib_cs;
 
 Raylib.InitWindow(800, 800, "The title of my window");
 Raylib.SetTargetFPS(60);
 
-int x = 0;
-int y = 390;
-int xh = 1;
-int yh = 1;
+int x = 10;
+int y = 100;
+int width = 50;
+int height = 50;
+
+List<int> coordinater = [];
+
+Rectangle fyra = new Rectangle (x,y,width,height);
 
 while (!Raylib.WindowShouldClose())
 {
   Raylib.BeginDrawing();
-  
-  Raylib.ClearBackground(Color.White);
+  Raylib.ClearBackground(Color.Green);
 
-  (x, y, xh, yh) = test(x, y, xh, yh);
-  
+
+  ballong(x, y, width, height, fyra);
+
+  x++;
+
+
+
+
   Raylib.EndDrawing();
 }
 
-static (int, int, int, int) test(int x, int y, int xh, int yh)
+
+static (int x, int y, int widht, int height) ballong(int x, int y, int width, int height, Rectangle fyra)
 {
-    Raylib.DrawRectangle(x,y,20,20,Color.Black);
-    x += xh;
-    y += yh;
-
-    if(y >= 780 || y <= 0)
-    {
-        yh *= -1;
-    }
-    if(x >= 780 || x <= 0)
-    {
-        xh *= -1;
-    }
-
-
-
-    return (x, y, xh, yh);
-
+  fyr
+  Raylib.DrawRectangle(x, y, width, height, Color.Red);
+  Raylib.DrawRectangleLinesEx(fyra, 5, Color.Black);
+  return (x,y,width,height);
 }
