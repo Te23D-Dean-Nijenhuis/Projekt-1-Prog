@@ -4,7 +4,6 @@ using Raylib_cs;
 Raylib.InitWindow(1600, 800, "Geometry dashers");
 Raylib.SetTargetFPS(60);
 Color Background = new(0, 225, 0, 255);
-Color Red = new Color(255, 0, 0, 255);
 int counter = 0;
 bool yes = false;
 
@@ -24,19 +23,13 @@ while (!Raylib.WindowShouldClose())
   GRIDTEST();
 
   TOWERPLACE(TOWERS); //placerar ut torn
+  yes = PREVIEW(yes);
 
   TOWERDRAW(TOWERS); // ritar torn
 
   Console.Clear(); //debug
   Console.WriteLine(TOWERS.Count); //debug
-
-  if(Raylib.IsKeyPressed(KeyboardKey.T)||yes)
-  {
-    PREVIEW();
-    yes = true;
-
-  }
-
+  Console.WriteLine(yes);
 
   
 
@@ -103,14 +96,24 @@ static List<TOWER> TOWERPLACE(List<TOWER> TOWERS)
   return TOWERS;
 }
 
-static void PREVIEW ()
+static bool PREVIEW (bool yes)
 {
+  Color Red = new Color(255, 0, 0, 55);
+  
+  if(Raylib.IsKeyPressed(KeyboardKey.T))     //preview
+  {
+    yes = !yes;
+  }
   Vector2 MouseFloat = Raylib.GetMousePosition();
 
-  int MouseIntX = 40 + 80 * (int)(Math.Floor(MouseFloat.X / 80)); //ganska klottrigt men detta avrundar så 
-  int MouseIntY = 40 + 80 * (int)(Math.Floor(MouseFloat.Y / 80)); //att det man endast kan placera enligt ett grid system
+  if (yes)
+  {
+    int MouseIntX = 40 + 80 * (int)(Math.Floor(MouseFloat.X / 80)); //ganska klottrigt men detta avrundar så 
+    int MouseIntY = 40 + 80 * (int)(Math.Floor(MouseFloat.Y / 80)); //att det man endast kan placera enligt ett grid system
+    Raylib.DrawCircle(MouseIntX, MouseIntY, 40, Red);
+  }
 
-  Raylib.DrawCircle(MouseIntX, MouseIntY, 40, Color.Red);
+  return yes;
 }
 
 static void TOWERDRAW(List<TOWER> TOWERS)

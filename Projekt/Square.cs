@@ -11,7 +11,7 @@ public class TOWER
     public int posY;
     public int radius;
 
-    // Constructor to initialize the TOWER object with posX, posY, and radius
+    // Constructor som initierar 
     public TOWER(int x, int y, int r)
     {
         posX = x;  
