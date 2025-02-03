@@ -3,13 +3,13 @@ using Raylib_cs;
 
 Raylib.InitWindow(1600, 800, "Geometry dashers");
 Raylib.SetTargetFPS(60);
-Color Background = new(0, 225, 0, 255);
+Color Background = new(0, 185, 0, 255);
 int counter = 0;
-bool yes = false;
+bool PreviewToggle = false;
 
 Color preview = new Color(0, 0, 255, 50);
 
-List<Square> squares = [];
+List<EnemySQ> EnemySQs = [];
 List<TOWER> TOWERS = [];
 
 
@@ -20,16 +20,18 @@ while (!Raylib.WindowShouldClose())
 
   Raylib.ClearBackground(Background);
 
+  counter = Counter(counter);
+
   GRIDTEST();
 
   TOWERPLACE(TOWERS); //placerar ut torn
-  yes = PREVIEW(yes);
+  PreviewToggle = PREVIEW(PreviewToggle);
 
   TOWERDRAW(TOWERS); // ritar torn
 
   Console.Clear(); //debug
-  Console.WriteLine(TOWERS.Count); //debug
-  Console.WriteLine(yes);
+  Console.WriteLine($"TORN = {TOWERS.Count}"); //debug
+  Console.WriteLine($"Counter = {counter}");
 
   
 
@@ -39,33 +41,12 @@ while (!Raylib.WindowShouldClose())
 
 
 
-  /*if (counter == 0)
-  {
-    squares.Add(new() { rect = new Rectangle(-50, 7, 50, 50) });
-  }
-
-  for (int i = 0; i < squares.Count; i++)
-  {
-    squares[i].rect.X+=5;
-    Place(squares[i]);
-  }
-
-  counter++;
-  if (counter == 60)
-  {
-    counter = 0;
-  }
-  */
-
+  
+  
+  
   Raylib.EndDrawing();
 }
 
-
-static void Place(Square square)
-{
-  Raylib.DrawRectangleRec(square.rect, Color.Red);
-  Raylib.DrawRectangleLinesEx(square.rect, 5, Color.Black);
-}
 
 static void GRIDTEST()
 {
@@ -87,8 +68,8 @@ static List<TOWER> TOWERPLACE(List<TOWER> TOWERS)
   {
     Vector2 MouseFloat = Raylib.GetMousePosition();
 
-    int MouseIntX = 40 + 80 * (int)(Math.Floor(MouseFloat.X / 80)); //ganska klottrigt men detta avrundar så 
-    int MouseIntY = 40 + 80 * (int)(Math.Floor(MouseFloat.Y / 80)); //att det man endast kan placera enligt ett grid system
+    int MouseIntX = 40 + 80 * (int)(MouseFloat.X / 80); //ganska klottrigt men detta avrundar så 
+    int MouseIntY = 40 + 80 * (int)(MouseFloat.Y / 80); //att det man endast kan placera enligt ett grid system
 
     TOWERS.Add(new TOWER(MouseIntX, MouseIntY, 40));
     
@@ -96,24 +77,24 @@ static List<TOWER> TOWERPLACE(List<TOWER> TOWERS)
   return TOWERS;
 }
 
-static bool PREVIEW (bool yes)
+static bool PREVIEW (bool PreviewToggle)
 {
   Color Red = new Color(255, 0, 0, 55);
-  
+
   if(Raylib.IsKeyPressed(KeyboardKey.T))     //preview
   {
-    yes = !yes;
+    PreviewToggle = !PreviewToggle;
   }
   Vector2 MouseFloat = Raylib.GetMousePosition();
 
-  if (yes)
+  if (PreviewToggle)
   {
-    int MouseIntX = 40 + 80 * (int)(Math.Floor(MouseFloat.X / 80)); //ganska klottrigt men detta avrundar så 
-    int MouseIntY = 40 + 80 * (int)(Math.Floor(MouseFloat.Y / 80)); //att det man endast kan placera enligt ett grid system
+    int MouseIntX = 40 + 80 * (int)(MouseFloat.X / 80); //ganska klottrigt men detta avrundar så 
+    int MouseIntY = 40 + 80 * (int)(MouseFloat.Y / 80); //att det man endast kan placera enligt ett grid system
     Raylib.DrawCircle(MouseIntX, MouseIntY, 40, Red);
   }
 
-  return yes;
+  return PreviewToggle;
 }
 
 static void TOWERDRAW(List<TOWER> TOWERS)
@@ -123,4 +104,25 @@ static void TOWERDRAW(List<TOWER> TOWERS)
     Raylib.DrawCircle(TOWERS[i].posX,TOWERS[i].posY,TOWERS[i].radius, Color.Black); 
     Raylib.DrawCircle(TOWERS[i].posX,TOWERS[i].posY,TOWERS[i].radius - 5, Color.Blue); 
   }
+}
+
+static int Counter(int counter)
+{
+  counter++;
+  if (counter == 60)
+  {
+    counter = 0;
+  }
+  return counter;
+}
+
+static List<EnemySQ> PlaceEnemySQ (List<EnemySQ> EnemySQs, int counter)
+{
+  if (counter == 0)
+  {
+    EnemySQs.
+  }
+
+
+  return EnemySQs;
 }

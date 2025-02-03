@@ -1,6 +1,7 @@
+using System.Diagnostics.Metrics;
 using Raylib_cs;
 
-public class Square
+public class EnemySQ
 {
   public Rectangle rect;
 }
