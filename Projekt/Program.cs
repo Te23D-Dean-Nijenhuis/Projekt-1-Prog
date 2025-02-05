@@ -19,12 +19,16 @@ while (!Raylib.WindowShouldClose())
   Raylib.BeginDrawing();
 
   Raylib.ClearBackground(Background);
+  counter = Counter(counter);     //Tanke: ska alltid köras först
 
-  counter = Counter(counter);
+  PlaceEnemySQ(EnemySQs,counter);
+
+  MoveEnemySQ(EnemySQs);
 
   GRIDTEST();
 
   TOWERPLACE(TOWERS); //placerar ut torn
+  
   PreviewToggle = PREVIEW(PreviewToggle);
 
   TOWERDRAW(TOWERS); // ritar torn
@@ -120,9 +124,18 @@ static List<EnemySQ> PlaceEnemySQ (List<EnemySQ> EnemySQs, int counter)
 {
   if (counter == 0)
   {
-    EnemySQs.
+    EnemySQs.Add(new() {rect = new Rectangle(10,10,10,10)} );
   }
 
 
+  return EnemySQs;
+}
+
+static List<EnemySQ> MoveEnemySQ (List<EnemySQ> EnemySQs)
+{
+  for (int i = 0; i < EnemySQs.Count; i++)
+  {
+    EnemySQs[i].rect.X ++;
+  }
   return EnemySQs;
 }
