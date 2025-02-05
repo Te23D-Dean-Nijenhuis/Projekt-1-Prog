@@ -23,7 +23,9 @@ while (!Raylib.WindowShouldClose())
 
   PlaceEnemySQ(EnemySQs,counter);
 
-  MoveEnemySQ(EnemySQs);
+  EnemySQs = MoveEnemySQ(EnemySQs);
+
+  DrawEnemySQ(EnemySQs);
 
   GRIDTEST();
 
@@ -36,6 +38,8 @@ while (!Raylib.WindowShouldClose())
   Console.Clear(); //debug
   Console.WriteLine($"TORN = {TOWERS.Count}"); //debug
   Console.WriteLine($"Counter = {counter}");
+  Console.WriteLine();
+  Console.WriteLine($"Antal fiender = {EnemySQs.Count}");
 
   
 
@@ -138,4 +142,12 @@ static List<EnemySQ> MoveEnemySQ (List<EnemySQ> EnemySQs)
     EnemySQs[i].rect.X ++;
   }
   return EnemySQs;
+}
+
+static void DrawEnemySQ (List<EnemySQ> EnemySQs)
+{
+  for (int i = 0; i < EnemySQs.Count; i++)
+  {
+  Raylib.DrawRectangleRec(EnemySQs[i].rect, Color.Red);
+  }
 }
