@@ -6,6 +6,7 @@ Raylib.SetTargetFPS(60);
 Color Background = new(0, 185, 0, 255);
 int counter = 0;
 bool PreviewToggle = false;
+int GridSize = 80;
 
 Color preview = new Color(0, 0, 255, 50);
 
@@ -25,13 +26,15 @@ while (!Raylib.WindowShouldClose())
 
   EnemySQs = MoveEnemySQ(EnemySQs);
 
+  GridSize = ChangeGrid(GridSize);
+
   DrawEnemySQ(EnemySQs);
 
-  GRIDTEST();
+  GRIDTEST(GridSize);
 
-  TOWERPLACE(TOWERS); //placerar ut torn
+  TOWERPLACE(TOWERS, GridSize); //placerar ut torn
   
-  PreviewToggle = PREVIEW(PreviewToggle);
+  PreviewToggle = PREVIEW(PreviewToggle, GridSize);
 
   TOWERDRAW(TOWERS); // ritar torn
 
@@ -40,6 +43,8 @@ while (!Raylib.WindowShouldClose())
   Console.WriteLine($"Counter = {counter}");
   Console.WriteLine();
   Console.WriteLine($"Antal fiender = {EnemySQs.Count}");
+
+  Console.WriteLine($"Gridsize = {GridSize}");
 
   
 
@@ -56,28 +61,28 @@ while (!Raylib.WindowShouldClose())
 }
 
 
-static void GRIDTEST()
+static void GRIDTEST(int GridSize)
 {
-  for (int i = 0; i < 1600; i += 80)
+  for (int i = 0; i < 1600; i += GridSize)
   {
     Raylib.DrawLine(i, 0, i, 800, Color.Gray);
 
   }
-  for (int i = 0; i < 800; i += 80)
+  for (int i = 0; i < 800; i += GridSize)
   {
     Raylib.DrawLine(0, i, 1600, i, Color.Gray);
 
   }
 }
 
-static List<TOWER> TOWERPLACE(List<TOWER> TOWERS)
+static List<TOWER> TOWERPLACE(List<TOWER> TOWERS, int GridSize)
 {
   if (Raylib.IsMouseButtonPressed(MouseButton.Left))
   {
     Vector2 MouseFloat = Raylib.GetMousePosition();
 
-    int MouseIntX = 40 + 80 * (int)(MouseFloat.X / 80); //ganska klottrigt men detta avrundar så 
-    int MouseIntY = 40 + 80 * (int)(MouseFloat.Y / 80); //att det man endast kan placera enligt ett grid system
+    int MouseIntX = 40 + GridSize * (int)(MouseFloat.X / GridSize); //ganska klottrigt men detta avrundar så 
+    int MouseIntY = 40 + GridSize * (int)(MouseFloat.Y / GridSize); //att det man endast kan placera enligt ett grid system
 
     TOWERS.Add(new TOWER(MouseIntX, MouseIntY, 40));
     
@@ -85,7 +90,7 @@ static List<TOWER> TOWERPLACE(List<TOWER> TOWERS)
   return TOWERS;
 }
 
-static bool PREVIEW (bool PreviewToggle)
+static bool PREVIEW (bool PreviewToggle, int GridSize)
 {
   Color Red = new Color(255, 0, 0, 55);
 
@@ -97,8 +102,8 @@ static bool PREVIEW (bool PreviewToggle)
 
   if (PreviewToggle)
   {
-    int MouseIntX = 40 + 80 * (int)(MouseFloat.X / 80); //ganska klottrigt men detta avrundar så 
-    int MouseIntY = 40 + 80 * (int)(MouseFloat.Y / 80); //att det man endast kan placera enligt ett grid system
+    int MouseIntX = 40  + GridSize * (int)(MouseFloat.X / GridSize); //ganska klottrigt men detta avrundar så 
+    int MouseIntY = 40  + GridSize * (int)(MouseFloat.Y / GridSize); //att det man endast kan placera enligt ett grid system
     Raylib.DrawCircle(MouseIntX, MouseIntY, 40, Red);
   }
 
@@ -128,7 +133,7 @@ static List<EnemySQ> PlaceEnemySQ (List<EnemySQ> EnemySQs, int counter)
 {
   if (counter == 0)
   {
-    EnemySQs.Add(new() {rect = new Rectangle(10,10,10,10)} );
+    EnemySQs.Add(new() {rect = new Rectangle(-60, 90, 60, 60)} );
   }
 
 
@@ -148,6 +153,20 @@ static void DrawEnemySQ (List<EnemySQ> EnemySQs)
 {
   for (int i = 0; i < EnemySQs.Count; i++)
   {
-  Raylib.DrawRectangleRec(EnemySQs[i].rect, Color.Red);
+    Raylib.DrawRectangleRec(EnemySQs[i].rect, Color.Red);
+    Raylib.DrawRectangleLinesEx(EnemySQs[i].rect, 5, Color.Black);
   }
+}
+
+static int ChangeGrid (int GridSize)
+{
+  if (Raylib.IsKeyPressed(KeyboardKey.Minus) && GridSize > 20)
+  {
+    GridSize /= 2;
+  }
+  if (Raylib.IsKeyPressed(KeyboardKey.Equal) && GridSize < 80) // tangenten equal på engelsk keyboard är plus på svenskt.
+  {
+    GridSize *= 2;
+  }
+  return GridSize;
 }
