@@ -3,6 +3,12 @@ using Raylib_cs;
 
 public class EnemySQ
 {
+  public int Speed;
+  public int Waypoint = 0;
+  public (int x, int y) Position;
+
+  public (int x, int y) Directions;
+  
   public Rectangle rect;
 }
 
