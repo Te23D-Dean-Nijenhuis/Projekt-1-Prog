@@ -3,6 +3,7 @@ using Raylib_cs;
 
 public class EnemySQ
 {
+  public int Hitpoints;
   public int Speed;
   public int Waypoint = 0;
   public int target;

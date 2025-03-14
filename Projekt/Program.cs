@@ -17,6 +17,15 @@ List<TOWER> TOWERS = [];
 
 List<(int, int)> Waypoints = [(840, 120), (840, 360), (200, 360), (200, 600), (1600, 600)]; // waypoints som definerar pathen
 
+List<Color> EnemyHp = 
+[
+  new Color(255, 0, 0), // 1 hp
+  new Color(0, 100, 255), // 2 hp
+  new Color(0, 200, 0),  // 3 hp
+  new Color(255, 255, 0), //4 hp
+  new Color(255, 150, 225)  //5 hp
+];
+
 
 
 while (!Raylib.WindowShouldClose())
@@ -30,7 +39,7 @@ while (!Raylib.WindowShouldClose())
 
   EnemySQs = Path(Waypoints, EnemySQs);
 
-  EnemySQs = Enemies.MoveEnemySQ(EnemySQs);
+  EnemySQs = Fiende_logik.MoveEnemySQ(EnemySQs);
 
   GridSize = ChangeGrid(GridSize);
 
@@ -38,7 +47,7 @@ while (!Raylib.WindowShouldClose())
 
   GRIDTEST(GridSize);
 
-  DrawEnemySQ(EnemySQs);
+  DrawEnemySQ(EnemySQs, EnemyHp);
 
   TowerCounter(TOWERS);
 
@@ -65,7 +74,6 @@ while (!Raylib.WindowShouldClose())
   {
     Console.WriteLine($"Waypoint = {EnemySQs[0].Waypoint}");
     Console.WriteLine($"Position = {EnemySQs[0].Position}"); //också debug
-
   }
 
 
@@ -195,7 +203,7 @@ static List<EnemySQ> PlaceEnemySQ(List<EnemySQ> EnemySQs, int counter)
 {
   if (counter == 0)
   {
-    EnemySQs.Add(new() { rect = new Rectangle(-60, 90, 60, 60) });
+    EnemySQs.Add(new() { rect = new Rectangle(-60, 90, 60, 60), Hitpoints = 5});
     EnemySQs[EnemySQs.Count - 1].Position = (-30, 120);    // dett är koordinaterna för mitten av EnemySQ
 
   }
@@ -206,11 +214,11 @@ static List<EnemySQ> PlaceEnemySQ(List<EnemySQ> EnemySQs, int counter)
 
 
 
-static void DrawEnemySQ(List<EnemySQ> EnemySQs)
+static void DrawEnemySQ(List<EnemySQ> EnemySQs, List<Color> EnemyHp)
 {
   for (int i = 0; i < EnemySQs.Count; i++)
   {
-    Raylib.DrawRectangleRec(EnemySQs[i].rect, Color.Red);
+    Raylib.DrawRectangleRec(EnemySQs[i].rect, EnemyHp[EnemySQs[i].Hitpoints - 1]);
     Raylib.DrawRectangleLinesEx(EnemySQs[i].rect, 5, Color.Black);
   }
 }
@@ -287,27 +295,28 @@ static List<EnemySQ> Attack(int counter, List<TOWER> TOWERS, List<EnemySQ> Enemy
 
     for (int i = 0; i < TOWERS.Count; i++)
     {
-      if (TOWERS[i].towerCounter == 60 || TOWERS[i].attackduration > 0)
+      if ((TOWERS[i].towerCounter == 60 || TOWERS[i].attackduration > 0) && EnemySQs.Count > 0)
       {
 
-        if (TOWERS[i].attackduration == 0)
+        if (TOWERS[i].attackduration == 0)  // starten på attack animationen
         {
           TOWERS[i].attackduration ++;
         }
 
         TOWERS[i].attackduration ++;
 
-        if (TOWERS[i].attackduration == 10)
+        Vector2 TowerPos = new Vector2(TOWERS[i].posX, TOWERS[i].posY);
+        Vector2 EnemyPos = new Vector2(EnemySQs[TOWERS[i].target].Position.x, EnemySQs[TOWERS[i].target].Position.y);
+
+        Raylib.DrawLineEx(TowerPos, EnemyPos, 5, Color.Blue);
+
+        if (TOWERS[i].attackduration == 10) // avslutar attack animationen
         {
           TOWERS[i].attackduration = 0;
           TOWERS[i].towerCounter = 0;
-          EnemySQs.RemoveAt(TOWERS[i].target);
+          EnemySQs[TOWERS[i].target].Hitpoints --;;
         }
 
-      Vector2 TowerPos = new Vector2(TOWERS[i].posX, TOWERS[i].posY);
-      Vector2 EnemyPos = new Vector2(EnemySQs[TOWERS[i].target].Position.x, EnemySQs[TOWERS[i].target].Position.y);
-
-      Raylib.DrawLineEx(TowerPos, EnemyPos, 5, Color.Blue);
 
 
       
