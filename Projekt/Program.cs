@@ -295,7 +295,7 @@ static List<EnemySQ> Attack(int counter, List<TOWER> TOWERS, List<EnemySQ> Enemy
 
     for (int i = 0; i < TOWERS.Count; i++)
     {
-      if ((TOWERS[i].towerCounter == 60 || TOWERS[i].attackduration > 0) && EnemySQs.Count > 0)
+      if ((TOWERS[i].towerCounter == 60 || TOWERS[i].attackduration > 0) && EnemySQs.Count > 0 && TOWERS[i].distance < 500)
       {
 
         if (TOWERS[i].attackduration == 0)  // starten på attack animationen
@@ -332,7 +332,7 @@ static List<TOWER> TowerCounter (List<TOWER> TOWERS)
     if (TOWERS[i].towerCounter < 60)
     {
     TOWERS[i].towerCounter ++;
-    } else if (TOWERS[i].distance < 300)
+    } else if (TOWERS[i].distance < 500)
     {
       TOWERS[i].towerCounter = 0;
     }
