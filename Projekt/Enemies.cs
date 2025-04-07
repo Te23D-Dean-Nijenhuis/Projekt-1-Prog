@@ -1,5 +1,6 @@
 public class Enemies
 {
+    
     public static List<EnemySQ> MoveEnemySQ(List<EnemySQ> EnemySQs)
     {
         for (int i = 0; i < EnemySQs.Count; i++)

@@ -1,5 +1,7 @@
-﻿using System.ComponentModel.Design;
+﻿using System.Diagnostics;
+using System.ComponentModel.Design;
 using System.Diagnostics.Metrics;
+using System.Diagnostics.Tracing;
 using System.Numerics;
 using Raylib_cs;
 
@@ -14,10 +16,10 @@ Color preview = new Color(0, 0, 255, 50);
 
 List<EnemySQ> EnemySQs = [];
 List<TOWER> TOWERS = [];
-
+ 
 List<(int, int)> Waypoints = [(840, 120), (840, 360), (200, 360), (200, 600), (1600, 600)]; // waypoints som definerar pathen
 
-List<Color> EnemyHp = 
+List<Color> EnemyHp =
 [
   new Color(255, 0, 0), // 1 hp
   new Color(0, 100, 255), // 2 hp
@@ -35,7 +37,7 @@ while (!Raylib.WindowShouldClose())
   Raylib.ClearBackground(Background);
   counter = Counter(counter);     //Tanke: ska alltid köras först
 
-  PlaceEnemySQ(EnemySQs, counter);
+  Fiende_logik.PlaceEnemySQ(EnemySQs, counter);
 
   EnemySQs = Path(Waypoints, EnemySQs);
 
@@ -69,6 +71,10 @@ while (!Raylib.WindowShouldClose())
   Console.WriteLine($"Antal fiender = {EnemySQs.Count}");
 
   Console.WriteLine($"Gridsize = {GridSize}");
+
+  long memoryUsage = Process.GetCurrentProcess().WorkingSet64 / (1024 * 1024);
+
+  Console.WriteLine($"Du använder: {memoryUsage} MB minne"); // debugg för eget intresse
 
   if (EnemySQs.Count > 1)
   {
@@ -199,21 +205,6 @@ static int Counter(int counter)
   return counter;
 }
 
-static List<EnemySQ> PlaceEnemySQ(List<EnemySQ> EnemySQs, int counter)
-{
-  if (counter == 0)
-  {
-    EnemySQs.Add(new() { rect = new Rectangle(-60, 90, 60, 60), Hitpoints = 5});
-    EnemySQs[EnemySQs.Count - 1].Position = (-30, 120);    // dett är koordinaterna för mitten av EnemySQ
-
-  }
-
-
-  return EnemySQs;
-}
-
-
-
 static void DrawEnemySQ(List<EnemySQ> EnemySQs, List<Color> EnemyHp)
 {
   for (int i = 0; i < EnemySQs.Count; i++)
@@ -240,7 +231,7 @@ static List<EnemySQ> Path(List<(int, int)> Waypoints, List<EnemySQ> EnemySQs)
 {
   for (int i = 0; i < EnemySQs.Count; i++)
   {
-    (int x, int y) Target = Waypoints[EnemySQs[i].Waypoint];
+    (int x, int y) Target = Waypoints[EnemySQs[i].Waypoint];  // hämtar från Enemy[i] en int som letar i listan waypoints för att göra en target
     EnemySQs[i].Directions = (Math.Sign(Target.x - EnemySQs[i].Position.x), Math.Sign(Target.y - EnemySQs[i].Position.y));
 
     if (EnemySQs[i].Directions.x == 0 && EnemySQs[i].Directions.y == 0)
@@ -269,22 +260,22 @@ static List<TOWER> Targeting(List<TOWER> TOWERS, List<EnemySQ> EnemySQs)
     if (TOWERS[i].towerCounter == 60)
     {
 
-    for (int ii = 0; ii < EnemySQs.Count; ii++)   //går igenom listan av fiender för att hitta kortaste avståndet till en fiende
-    {
-      double distanceTarget = Math.Sqrt(Math.Pow(TOWERS[i].posX - EnemySQs[ii].Position.x, 2) + Math.Pow(TOWERS[i].posY - EnemySQs[ii].Position.y, 2));
-      if (ii == 0)
+      for (int ii = 0; ii < EnemySQs.Count; ii++)   //går igenom listan av fiender för att hitta kortaste avståndet till en fiende
       {
-        distanceConfirm = distanceTarget;
-        TOWERS[i].target = ii;
-        TOWERS[i].distance = distanceConfirm;
+        double distanceTarget = Math.Sqrt(Math.Pow(TOWERS[i].posX - EnemySQs[ii].Position.x, 2) + Math.Pow(TOWERS[i].posY - EnemySQs[ii].Position.y, 2));
+        if (ii == 0)
+        {
+          distanceConfirm = distanceTarget;
+          TOWERS[i].target = ii;
+          TOWERS[i].distance = distanceConfirm;
+        }
+        if (distanceTarget < distanceConfirm)
+        {
+          distanceConfirm = distanceTarget;
+          TOWERS[i].target = ii;
+          TOWERS[i].distance = distanceConfirm;
+        }
       }
-      if (distanceTarget < distanceConfirm)
-      {
-        distanceConfirm = distanceTarget;
-        TOWERS[i].target = ii;
-        TOWERS[i].distance = distanceConfirm;
-      }
-    }
     }
   }
   return TOWERS;
@@ -293,52 +284,51 @@ static List<TOWER> Targeting(List<TOWER> TOWERS, List<EnemySQ> EnemySQs)
 static List<EnemySQ> Attack(int counter, List<TOWER> TOWERS, List<EnemySQ> EnemySQs)
 {
 
-    for (int i = 0; i < TOWERS.Count; i++)
+  for (int i = 0; i < TOWERS.Count; i++)
+  {
+    if ((TOWERS[i].towerCounter == 60 || TOWERS[i].attackduration > 0) && EnemySQs.Count > 0 && TOWERS[i].distance < 500)
     {
-      if ((TOWERS[i].towerCounter == 60 || TOWERS[i].attackduration > 0) && EnemySQs.Count > 0 && TOWERS[i].distance < 500)
+
+      if (TOWERS[i].attackduration == 0)  // starten på attack animationen
       {
-
-        if (TOWERS[i].attackduration == 0)  // starten på attack animationen
-        {
-          TOWERS[i].attackduration ++;
-        }
-
-        TOWERS[i].attackduration ++;
-
-        Vector2 TowerPos = new Vector2(TOWERS[i].posX, TOWERS[i].posY);
-        Vector2 EnemyPos = new Vector2(EnemySQs[TOWERS[i].target].Position.x, EnemySQs[TOWERS[i].target].Position.y);
-
-        Raylib.DrawLineEx(TowerPos, EnemyPos, 5, Color.Blue);
-
-        if (TOWERS[i].attackduration == 10) // avslutar attack animationen
-        {
-          TOWERS[i].attackduration = 0;
-          TOWERS[i].towerCounter = 0;
-          EnemySQs[TOWERS[i].target].Hitpoints --;;
-        }
-
-
-
-      
+        TOWERS[i].attackduration++;
       }
+
+      TOWERS[i].attackduration++;
+
+      Vector2 TowerPos = new Vector2(TOWERS[i].posX, TOWERS[i].posY);
+      Vector2 EnemyPos = new Vector2(EnemySQs[TOWERS[i].target].Position.x, EnemySQs[TOWERS[i].target].Position.y);
+
+      Raylib.DrawLineEx(TowerPos, EnemyPos, 5, Color.Blue);
+
+      if (TOWERS[i].attackduration == 10) // avslutar attack animationen
+      {
+        TOWERS[i].attackduration = 0;
+        TOWERS[i].towerCounter = 0;
+        EnemySQs[TOWERS[i].target].Hitpoints--; ;
+      }
+
+
+
+
     }
-    return EnemySQs;
   }
-  
-static List<TOWER> TowerCounter (List<TOWER> TOWERS)
+  return EnemySQs;
+}
+
+static List<TOWER> TowerCounter(List<TOWER> TOWERS)
 {
   for (int i = 0; i < TOWERS.Count; i++)
   {
     if (TOWERS[i].towerCounter < 60)
     {
-    TOWERS[i].towerCounter ++;
-    } else if (TOWERS[i].distance < 500)
+      TOWERS[i].towerCounter++;
+    }
+    else if (TOWERS[i].distance < 500)
     {
       TOWERS[i].towerCounter = 0;
     }
   }
 
- return TOWERS;
+  return TOWERS;
 }
-
-
