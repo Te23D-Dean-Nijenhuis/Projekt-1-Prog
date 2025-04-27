@@ -6,7 +6,7 @@ public class Fiende_logik
     {
         for (int i = 0; i < EnemySQs.Count; i++)
         {
-            if (Waypoints[EnemySQs[i].Waypoint].Item1 - EnemySQs[i].Position.x - (SpeedMulti[EnemySQs[i].Hitpoints - 1] * EnemySQs[i].Directions.x) < 0 || Waypoints[EnemySQs[i].Waypoint].Item2 - EnemySQs[i].Position.y - (SpeedMulti[EnemySQs[i].Hitpoints - 1] * EnemySQs[i].Directions.y) < 0) // om avståndet är till nästa waypoint är kortare än ett steg
+            if (Math.Abs(Waypoints[EnemySQs[i].Waypoint].Item1 - EnemySQs[i].Position.x) - Math.Abs(SpeedMulti[EnemySQs[i].Hitpoints - 1] * EnemySQs[i].Directions.x) < 0 || Math.Abs(Waypoints[EnemySQs[i].Waypoint].Item2 - EnemySQs[i].Position.y) - Math.Abs(SpeedMulti[EnemySQs[i].Hitpoints - 1] * EnemySQs[i].Directions.y) < 0) // om avståndet är till nästa waypoint är kortare än ett steg
             {  
                 EnemySQs[i].Position = Waypoints[EnemySQs[i].Waypoint]; // sätter positionen lika waypointen istället.
                 EnemySQs[i].rect.X = Waypoints[EnemySQs[i].Waypoint].Item1 - 30;
