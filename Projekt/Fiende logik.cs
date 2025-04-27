@@ -2,18 +2,26 @@ using System.Data;
 using Raylib_cs;
 public class Fiende_logik
 {
-
-
-    public static List<EnemySQ> MoveEnemySQ(List<EnemySQ> EnemySQs)
+    public static List<EnemySQ> MoveEnemySQ(List<EnemySQ> EnemySQs, List<(int, int)> Waypoints, List<float> SpeedMulti)
     {
         for (int i = 0; i < EnemySQs.Count; i++)
         {
-            EnemySQs[i].rect.X += EnemySQs[i].Directions.x;
-            EnemySQs[i].Position.x += EnemySQs[i].Directions.x;
+            if (Waypoints[EnemySQs[i].Waypoint].Item1 - EnemySQs[i].Position.x - (SpeedMulti[EnemySQs[i].Hitpoints - 1] * EnemySQs[i].Directions.x) < 0 || Waypoints[EnemySQs[i].Waypoint].Item2 - EnemySQs[i].Position.y - (SpeedMulti[EnemySQs[i].Hitpoints - 1] * EnemySQs[i].Directions.y) < 0) // om avståndet är till nästa waypoint är kortare än ett steg
+            {  
+                EnemySQs[i].Position = Waypoints[EnemySQs[i].Waypoint]; // sätter positionen lika waypointen istället.
+                EnemySQs[i].rect.X = Waypoints[EnemySQs[i].Waypoint].Item1 - 30;
+                EnemySQs[i].rect.Y = Waypoints[EnemySQs[i].Waypoint].Item2 - 30;
 
+                EnemySQs[i].Waypoint ++; //sätter till nästa waypoint.
 
-            EnemySQs[i].rect.Y += EnemySQs[i].Directions.y;
-            EnemySQs[i].Position.y += EnemySQs[i].Directions.y; //samma sak fast för positionen i int eftersom jag hatar floats
+            } else // den flyttar bara ifall det tidigare inte har inträffat.
+            {
+            EnemySQs[i].rect.X += SpeedMulti[EnemySQs[i].Hitpoints -1] * EnemySQs[i].Directions.x;
+            EnemySQs[i].Position.x += SpeedMulti[EnemySQs[i].Hitpoints -1] * EnemySQs[i].Directions.x;  //samma som kommentaren nedan.
+
+            EnemySQs[i].rect.Y += SpeedMulti[EnemySQs[i].Hitpoints -1] * EnemySQs[i].Directions.y;
+            EnemySQs[i].Position.y += SpeedMulti[EnemySQs[i].Hitpoints -1] * EnemySQs[i].Directions.y;  //positionen är skillt från startpunkten av varje kvadrat för detta gör matten mycket enklare för mig eftesom det personligen är lättare att utgå ifrån mitten av kvadraten.
+            }
 
             if (EnemySQs[i].Hitpoints < 1)
             {

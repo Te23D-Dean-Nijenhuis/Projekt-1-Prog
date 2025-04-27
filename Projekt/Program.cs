@@ -28,6 +28,8 @@ List<Color> EnemyHp =
   new Color(255, 150, 225)  //5 hp
 ];
 
+List<float> SpeedMulti = [1f, 1.5f, 2f, 2.5f, 3f]; //multi på speed baserat på vilken hp, som i Bloons TD
+
 
 
 while (!Raylib.WindowShouldClose()) //huvud loopen för spelet
@@ -41,7 +43,7 @@ while (!Raylib.WindowShouldClose()) //huvud loopen för spelet
 
   EnemySQs = Path(Waypoints, EnemySQs);  //bestämmer för var och en fiende vilken waypoint dem ska åka mot.
 
-  EnemySQs = Fiende_logik.MoveEnemySQ(EnemySQs);
+  EnemySQs = Fiende_logik.MoveEnemySQ(EnemySQs, Waypoints, SpeedMulti);
 
   GridSize = ChangeGrid(GridSize);
 
@@ -78,6 +80,7 @@ while (!Raylib.WindowShouldClose()) //huvud loopen för spelet
 
   if (EnemySQs.Count > 1)
   {
+    Console.WriteLine($"Avstånd minus steg = {Waypoints[EnemySQs[0].Waypoint].Item1 - EnemySQs[0].Position.x - (SpeedMulti[EnemySQs[0].Hitpoints - 1] * EnemySQs[0].Directions.x)}");
     Console.WriteLine($"Waypoint = {EnemySQs[0].Waypoint}");
     Console.WriteLine($"Position = {EnemySQs[0].Position}"); //också debug
   }
