@@ -4,11 +4,16 @@ using System.Diagnostics.Metrics;
 using System.Diagnostics.Tracing;
 using System.Numerics;
 using Raylib_cs;
+using Projekt;
 
 Raylib.InitWindow(1600, 800, "Geometry dashers");
 Raylib.SetTargetFPS(60);
+
+
 Color Background = new(0, 185, 0, 255);
+
 int counter = 0;
+
 bool PreviewToggle = false;
 int GridSize = 80;
 
@@ -16,7 +21,12 @@ Color preview = new Color(0, 0, 255, 50);
 
 List<EnemySQ> EnemySQs = [];
 List<TOWER> TOWERS = [];
- 
+
+List<int> SpawnAmmount = [0,0,0,0,0]; //Hur många av varje typ av fiende som ska spawnas
+int RoundLenghtTime = 600; //längden av rundan ska vara 10 sekunder från början (60 * 10) 
+int Roundnumber = 0;
+int RoundClock;
+
 List<(int, int)> Waypoints = [(840, 120), (840, 360), (200, 360), (200, 600), (1600, 600)]; // waypoints som definerar pathen
 
 List<Color> EnemyHp =
@@ -37,6 +47,7 @@ while (!Raylib.WindowShouldClose()) //huvud loopen för spelet
   Raylib.BeginDrawing();
 
   Raylib.ClearBackground(Background);
+  SpawnAmmount = Rounds.TotalEnemies(SpawnAmmount, Roundnumber);
   counter = Counter(counter);     //Tanke: ska alltid köras först
 
   Fiende_logik.PlaceEnemySQ(EnemySQs, counter);
