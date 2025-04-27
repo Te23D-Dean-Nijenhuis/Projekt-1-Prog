@@ -28,7 +28,7 @@ public class Rounds
 
         return RoundLenghtTime;
     }
-
+/*
     public static int RunRound (List<EnemySQ> EnemySQs, int RoundLenghtTime)
     {
         Fiende_logik.MoveEnemySQ(List<EnemySQ> EnemySQs);
@@ -36,4 +36,5 @@ public class Rounds
 
         return RoundLenghtTime; //TEMP
     } 
+    */
 }

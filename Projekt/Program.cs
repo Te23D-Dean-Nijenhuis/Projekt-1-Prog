@@ -30,7 +30,7 @@ List<Color> EnemyHp =
 
 
 
-while (!Raylib.WindowShouldClose())
+while (!Raylib.WindowShouldClose()) //huvud loopen för spelet
 {
   Raylib.BeginDrawing();
 
@@ -39,7 +39,7 @@ while (!Raylib.WindowShouldClose())
 
   Fiende_logik.PlaceEnemySQ(EnemySQs, counter);
 
-  EnemySQs = Path(Waypoints, EnemySQs);
+  EnemySQs = Path(Waypoints, EnemySQs);  //bestämmer för var och en fiende vilken waypoint dem ska åka mot.
 
   EnemySQs = Fiende_logik.MoveEnemySQ(EnemySQs);
 
@@ -72,7 +72,7 @@ while (!Raylib.WindowShouldClose())
 
   Console.WriteLine($"Gridsize = {GridSize}");
 
-  long memoryUsage = Process.GetCurrentProcess().WorkingSet64 / (1024 * 1024);
+  long memoryUsage = Process.GetCurrentProcess().WorkingSet64 / (1024 * 1024);  //stulen kod
 
   Console.WriteLine($"Du använder: {memoryUsage} MB minne"); // debugg för eget intresse
 
