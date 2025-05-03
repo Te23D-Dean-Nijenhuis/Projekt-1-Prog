@@ -26,6 +26,10 @@ List<int> SpawnAmmount = [0,0,0,0,0]; //Hur många av varje typ av fiende som sk
 int RoundLenghtTime = 600; //längden av rundan ska vara 10 sekunder från början (60 * 10) 
 int Roundnumber = 0;
 int RoundClock;
+bool AllKilled = false;
+List<float> SpawnTimers = [0f,0f,0f,0f,0f]; //Hur lång tid det ska ta att spawna
+List<int> SpawnTimersClocks = [0,0,0,0,0]; // klockor som när mer en samma plats i ovanstånde lista spawnar en enemy
+List<int> RoundSpawned = [0,0,0,0,0]; // hur många av varje enemy som spawnat denna runda.
 
 List<(int, int)> Waypoints = [(840, 120), (840, 360), (200, 360), (200, 600), (1600, 600)]; // waypoints som definerar pathen
 
@@ -50,7 +54,7 @@ while (!Raylib.WindowShouldClose()) //huvud loopen för spelet
   SpawnAmmount = Rounds.TotalEnemies(SpawnAmmount, Roundnumber);
   counter = Counter(counter);     //Tanke: ska alltid köras först
 
-  Fiende_logik.PlaceEnemySQ(EnemySQs, counter);
+  
 
   EnemySQs = Path(Waypoints, EnemySQs);  //bestämmer för var och en fiende vilken waypoint dem ska åka mot.
 

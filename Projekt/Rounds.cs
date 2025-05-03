@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 namespace Projekt;
 
@@ -24,22 +25,43 @@ public class Rounds
 
     public static int RoundTime (int RoundLenghtTime, int RoundNumber) // ändrar längden av rundan.
     {
-        RoundLenghtTime = 600 + 120*RoundNumber; // längden av rundan ökar med 2 sekunder varje runda.
+        RoundLenghtTime = 600 + 120*RoundNumber; // längden av rundan ökar med 2 sekunder varje runda. Första runda är 100 sek
 
         return RoundLenghtTime;
     }
 
-    public static int RoundClock (int RoundLenghtTime, int RoundClock)
+    public static int RoundClock (int RoundLenghtTime, int RoundClock, bool AllKilled)  // en klocka som räknar tiden på rundan;
     {
-        if ()
+        if (RoundClock < RoundLenghtTime) //räknar upp klockan så länge den är mindre än hur lång rundan ska vara.
         {
             RoundClock ++;
+        } else if (RoundClock == RoundLenghtTime && AllKilled) //när klockan är slut OCH alla är dödade klocka = 0
+        {
+            RoundClock = 0;
         }
+        return RoundClock;
     }
 
-    public static void LimitSpawnEnemies (List<EnemySQ> EnemySQs, int )
+    public static List<float> SpawnTimer (List<float> SpawnTimers, int RoundLenghtTime, List<int> SpawnAmmount)
     {
-        PlaceEnemySQ(List<EnemySQ> EnemySQs, int counter)
+        for (int i = 0; i < SpawnTimers.Count; i++)
+        {
+            SpawnTimers[i] = RoundLenghtTime/SpawnAmmount[i];
+        }
+
+        return SpawnTimers;
+    }
+
+    public static void SpawnEnemies (List<EnemySQ> EnemySQs, int counter, List<int> SpawnAmmount, bool AllKilled)
+    {
+        if(!AllKilled)
+        {
+        for (int i = 0; i < 4; i++)
+        {  
+            if()
+        }
+        }
+    
     }
 
 }

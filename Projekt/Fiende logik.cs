@@ -30,11 +30,11 @@ public class Fiende_logik
         }
         return EnemySQs;
     }
-    public static List<EnemySQ> PlaceEnemySQ(List<EnemySQ> EnemySQs, int counter)
+    public static List<EnemySQ> PlaceEnemySQ(List<EnemySQ> EnemySQs, int counter, int i)
     {
         if (counter == 0)
         {
-            EnemySQs.Add(new() { rect = new Rectangle(-60, 90, 60, 60), Hitpoints = 5});
+            EnemySQs.Add(new() { rect = new Rectangle(-60, 90, 60, 60), Hitpoints = i});
             EnemySQs[EnemySQs.Count - 1].Position = (-30, 120);    // dett är koordinaterna för mitten av EnemySQ
 
         }
