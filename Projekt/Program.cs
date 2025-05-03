@@ -66,12 +66,13 @@ while (!Raylib.WindowShouldClose()) //huvud loopen för spelet
 
   GRIDTEST(GridSize);
 
+  Rounds.SpawnEnemies(EnemySQs, SpawnAmmount, AllKilled, SpawnTimersClocks, SpawnTimers);
+
   DrawEnemySQ(EnemySQs, EnemyHp);
 
   TowerCounter(TOWERS);
 
   Targeting(TOWERS, EnemySQs);
-
 
 
   TOWERPLACE(TOWERS, GridSize); //placerar ut torn

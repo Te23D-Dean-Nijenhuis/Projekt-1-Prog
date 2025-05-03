@@ -7,7 +7,7 @@ namespace Projekt;
 
 public class Rounds
 {
-    public static List<int> TotalEnemies (List<int> SpawnAmmount, int Roundnumber)  //definerar/ändrar listan ovan
+    public static List<int> TotalEnemies (List<int> SpawnAmmount, int Roundnumber)  //definerar/ändrar listan av antal fiender som ska spawna
     {
         SpawnAmmount[0] = 20 + 5*Roundnumber;
 
@@ -52,13 +52,29 @@ public class Rounds
         return SpawnTimers;
     }
 
-    public static void SpawnEnemies (List<EnemySQ> EnemySQs, int counter, List<int> SpawnAmmount, bool AllKilled)
+    public static List<int> SpawnClocks (List<float> SpawnTimers, List<int> SpawnTimersClocks) //kör klockorna till spawning
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            SpawnTimersClocks[i] ++;
+            if (SpawnTimersClocks[i] > SpawnTimers[i])
+            {
+                SpawnTimersClocks[i] = 0;
+            }
+        }
+        return SpawnTimersClocks;
+    }
+
+    public static void SpawnEnemies (List<EnemySQ> EnemySQs, List<int> SpawnAmmount, bool AllKilled, List<int> SpawnTimersClocks, List<float> SpawnTimers)
     {
         if(!AllKilled)
         {
         for (int i = 0; i < 4; i++)
         {  
-            if()
+            if(SpawnTimersClocks[i]+ 1 >= SpawnTimers[i]) //när spawntimerclock + 1 merlikamed spawntimers så spawnas en fiende med HP = i      +1 eftersom detta gör så att en fiende hinner spawna innan klockan resetas, men intervallen blir fortfarande detsamma.
+            {
+                Fiende_logik.PlaceEnemySQ(EnemySQs, i);
+            }
         }
         }
     
